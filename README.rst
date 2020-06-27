@@ -6,19 +6,11 @@ Figa makes it easy to configure your app on multiple environments.
 Figa can read from multiple sources including several file formats, environment variables,
 and even the Internet, allowing you to configure your project however you want.
 
-Installation
-------------
 
-Install from PyPA:
 
 .. code-block:: console
 
     $ pip install figa
-
-Example
--------
-
-
 
 .. code-block:: py
 
