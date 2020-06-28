@@ -90,9 +90,67 @@ Default values can be set that will be included on every environment.
 
     assert dev_cfg.name == prod_cfg.name  # "name" config item is included in both
 
-Required Values
-~~~~~~~~~~~~~~~
+Required Values and Type Checking
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
+In your Config class you can set required values and types that will be checked when the
+config is loaded. This helps ensure that your code doesn't run with missing information.
+
+.. code-block:: python
+
+    @figa.config
+    class Config:
+        # two required config values: `string` & `sub.number`
+        __required__ = {
+            "string": str,
+            "sub": {
+                "number": int
+            }
+        }
+
+If any values are missing, an error will be raised:
+
+.. code-block:: python
+
+    @figa.config
+    class Config:
+        # two required config values: `string` & `sub.number`
+        __required__ = {
+            "string": str,
+            "sub": {
+                "number": int
+            }
+        }
+
+        missing_vals = {  # this config is missing sub.number
+            "string": "hello, world",
+            "sub": {}
+        }
+
+    >>> cfg = Config("missing_vals")
+    ValueError: Missing required item 'sub.number'
+
+Figa will automatically convert strings and numbers for you where possible.
+
+.. code-block:: python
+
+    @figa.config
+    class Config:
+        __required__ = {
+            "stringval": str,
+            "numberval": int
+        }
+
+        values = {
+            "stringval": 100,
+            "numberval": "42"
+        }
+
+    >>> cfg = Config("values")
+    >>> cfg.stringval
+    '100'
+    >>> cfg.numberval
+    42
 
 
 This project is published under the MIT License. See ``LICENSE.md``.

@@ -3,10 +3,12 @@ venv/
 # Byte-compiled / optimized / DLL files
 __pycache__/
 *.py[cod]
+mytesting.py
 *$py.class
 
 # for test purposes
 ignored.conf
+
 
 # C extensions
 *.so
