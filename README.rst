@@ -35,8 +35,8 @@ Usage
 
     config = MyConfig("development")
 
-    # config can be accessed using dots or indexing
-    print(config.key == config["key"])  # True
+    >>> config.key == config["key"]  # config can be accessed using dots or indexing
+    True
 
 Environment Detection
 ~~~~~~~~~~~~~~~~~~~~~
@@ -56,7 +56,7 @@ You can implement your own function that detects where to pull config values fro
             else:
                 return "development"
 
-    config = Config()  # if no environment is passed, get_env() will be called.
+    >>> config = Config()  # if no environment is passed, get_env() will be called.
 
 File Types
 ~~~~~~~~~~
@@ -85,10 +85,10 @@ Default values can be set that will be included on every environment.
         dev = {"host": "localhost"}
         prod = {"host": "myapp.com"}
 
-    dev_cfg = MyConfig("dev")
-    prod_cfg = MyConfig("prod")
-
-    assert dev_cfg.name == prod_cfg.name  # "name" config item is included in both
+    >>> dev_cfg = MyConfig("dev")
+    >>> prod_cfg = MyConfig("prod")
+    >>> dev_cfg.name == prod_cfg.name  # "name" config item is included in both
+    True
 
 Required Values and Type Checking
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
