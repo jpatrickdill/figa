@@ -25,8 +25,8 @@ Figa supports many sources, including:
 
     import figa
 
-
-    class MyConfig(figa.Config):
+    @figa.config
+    class MyConfig:
         development = "~/config.yml"  # use YAML file for config when developing
         production = "env", "cfg_"  # use environment variables with cfg_ prefix in production
 
@@ -51,7 +51,8 @@ Data types can be set explicitly or guessed from the file extension.
 
 .. code-block:: python
 
-    class MyConfig(figa.Config):
+    @figa.config
+    class MyConfig:
         explicit_ex = "ini", "./config.conf"
         # .conf would be detected as HOCON, but we set to INI
 
