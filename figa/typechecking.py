@@ -4,7 +4,7 @@
 converters = [str, int, float, bool]
 
 
-def check(types: dict, values: dict, trace=None):
+def check(types, values, trace=None):
     # checks whether the values match types of types argument, or can be converted
 
     trace = trace or []

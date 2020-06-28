@@ -1,6 +1,7 @@
 import os
 
-from figa.loaders.default import BasicReader, DictValueReader
+from figa import typechecking
+from figa.loaders.parser import DictValueReader
 from figa.util import dict_merge
 
 
@@ -16,7 +17,7 @@ class EnvParser:
 
 class PrefixableReader(DictValueReader):
     def __init__(self, values, prefix="", default=None, required=None):
-        super().__init__(values, required=required)
+        super().__init__({})
 
         self._list = False
 
@@ -31,13 +32,15 @@ class PrefixableReader(DictValueReader):
         if default is not None:
             self._values = dict_merge(default, self._values)
 
+        typechecking.check(required or {}, self)
+
     def __getitem__(self, item):
         item = item.lower()
 
         if item in self._values:
             val = self._values[item]
             if isinstance(val, dict) or isinstance(val, list):
-                return BasicReader(val)
+                return DictValueReader(val)
             else:
                 return val
         else:

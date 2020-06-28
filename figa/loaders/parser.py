@@ -46,7 +46,7 @@ class Parser:
 
             file.close()
 
-        return BasicReader(data, default=default, required=required)
+        return DictValueReader(data, default=default, required=required)
 
     def parse_string(self, s):
         raise NotImplementedError
@@ -60,9 +60,21 @@ class Parser:
 
 
 class DictValueReader:
-    def __init__(self, values, required=None):
-        if required is not None:
-            typechecking.check(required, values)
+    def __init__(self, values, default=None, required=None):
+        self._list = isinstance(values, list)
+
+        if self._list:
+            self._values = values
+        else:
+            self._values = {}
+
+            for k, v in values.items():
+                self._values[k.lower()] = v
+
+            self._values = dict_merge(default or {}, self._values)
+
+            if required is not None:
+                typechecking.check(required, self._values)
 
     def __repr__(self):
         return repr(self._values)
@@ -77,7 +89,7 @@ class DictValueReader:
             val = self._values[item.lower()]
 
         if isinstance(val, dict) or isinstance(val, list):
-            return BasicReader(val)
+            return DictValueReader(val)
         else:
             return val
 
@@ -104,20 +116,3 @@ class DictValueReader:
 
     def __getattr__(self, item):
         return self[item]
-
-
-class BasicReader(DictValueReader):
-    def __init__(self, values, default=None, required=None):
-        super().__init__(values, required=required)
-
-        self._list = isinstance(values, list)
-
-        if self._list:
-            self._values = values
-        else:
-            if default is not None:
-                values = dict_merge(default, values)
-
-            self._values = {}
-            for k, v in values.items():
-                self._values[k.lower()] = v

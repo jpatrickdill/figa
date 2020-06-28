@@ -1,4 +1,4 @@
-from figa.loaders.default import Parser
+from figa.loaders.parser import Parser
 from pyhocon import ConfigFactory, HOCONConverter
 import json
 

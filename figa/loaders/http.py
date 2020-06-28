@@ -1,4 +1,4 @@
-from figa.loaders.default import BasicReader
+from figa.loaders.parser import DictValueReader
 from figa.loaders import parsers_full
 import requests
 
@@ -14,7 +14,7 @@ class HttpParser:
         parser = parsers_full[parser]("")
 
         data = requests.get(url)
-        self.reader = BasicReader(parser.parse_string(data.text), default=default, required=required)
+        self.reader = DictValueReader(parser.parse_string(data.text), default=default, required=required)
 
     @classmethod
     def __handler__(cls, *args, default=None, required=None, **kwargs):

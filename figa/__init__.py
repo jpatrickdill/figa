@@ -2,7 +2,7 @@ import platform
 from functools import wraps
 
 from figa.loaders import detect_and_parse
-from figa.loaders.default import BasicReader, DictValueReader
+from figa.loaders.parser import DictValueReader
 from os import environ as env
 
 # ease of use
@@ -44,7 +44,7 @@ def config(cls):
 
         # get reader
         if isinstance(args[0], dict):  # dict object
-            return BasicReader(args[0], default=default, required=cls.__required__)
+            return DictValueReader(args[0], default=default, required=cls.__required__)
         elif isinstance(args[0], str):  # string parser name
             parsed = detect_and_parse(args, default=default, required=cls.__required__, no_warnings=no_warn)
         else:

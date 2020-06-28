@@ -1,4 +1,4 @@
-from figa.loaders.default import Parser
+from figa.loaders.parser import Parser
 from configobj import ConfigObj
 from io import StringIO
 
