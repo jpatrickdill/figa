@@ -12,6 +12,7 @@ requests = "*"
 configobj = "*"
 toml = "*"
 pyhocon = "*"
+deepdiff = {extras = ["murmur"], version = "*"}
 
 [requires]
 python_version = "3.4"

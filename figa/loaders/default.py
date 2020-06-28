@@ -94,3 +94,6 @@ class BasicReader(DictValueReader):
             self._values = {}
             for k, v in values.items():
                 self._values[k.lower()] = v
+
+    def raw(self):
+        return self._values

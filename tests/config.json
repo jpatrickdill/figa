@@ -1,8 +1,9 @@
 {
-  "test": "value",
-  "list": [0, 1, 2, 3, 4],
-  "sub": {
-    "a": 1,
-    "b": 2
+  "number": 12,
+  "string": "Hello, world!",
+  "fruits": ["apple", "pear"],
+  "person": {
+    "name": "Zach",
+    "age": 20
   }
 }

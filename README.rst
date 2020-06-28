@@ -1,11 +1,20 @@
 Figa
 ====
 
-Figa makes it easy to configure your app on multiple environments.
-
-Figa can read from multiple sources including several file formats, environment variables,
+Figa can read from multiple config sources including several file formats, environment variables,
 and even the Internet, allowing you to configure your project however you want.
 
+Figa supports many sources, including:
+
+- Environment variables
+- Dict objects
+- JSON  (.json)
+- HOCON  (.hocon, .conf)
+- INI, CFG  (.ini, .cfg)
+- YAML  (.yaml, .yml)
+- TOML  (.toml)
+- .properties  (.properties)
+- Internet resources
 
 
 .. code-block:: console
@@ -38,18 +47,6 @@ and even the Internet, allowing you to configure your project however you want.
     prod_cfg = MyConfig("production")
 
 
-Figa supports many configuration sources, including:
-
-- Environment variables
-- Dict objects
-- JSON  (.json)
-- HOCON  (.hocon, .conf)
-- INI, CFG  (.ini, .cfg)
-- YAML  (.yaml, .yml)
-- TOML  (.toml)
-- .properties  (.properties)
-- Internet resources
-
 Data types can be set explicitly or guessed from the file extension.
 
 .. code-block:: python
@@ -58,3 +55,4 @@ Data types can be set explicitly or guessed from the file extension.
         explicit_ex = "ini", "./config.conf"
         # .conf would be detected as HOCON, but we set to INI
 
+This project is published under the MIT License. See ``LICENSE.md``.

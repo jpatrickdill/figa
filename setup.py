@@ -1,6 +1,7 @@
 from setuptools import setup, find_packages
 from os import path
-from figa import __VERSION__ as VERSION
+
+VERSION = "0.1a2"
 
 here = path.abspath(path.dirname(__file__))
 
@@ -9,7 +10,7 @@ with open(path.join(here, "README.rst"), "r") as readme:
 
 setup(
     name="figa",
-    description="Python library designed to handle project configuration on multiple environments.",
+    description="Manage project configuration on multiple environments with ease.",
     long_description=long_desc,
     version=VERSION,
     url="https://github.com/jpatrickdill/figa",
@@ -43,5 +44,5 @@ setup(
     packages=find_packages(),
     python_requires='>=3.0, <4',
 
-    install_requires=["pyyaml", "configobj", "toml", "pyhocon"]
+    install_requires=["pyyaml", "configobj", "toml", "pyhocon", "requests"]
 )

@@ -1,7 +1,9 @@
-people:
-  - name: patrick
-    age: 17
-  - name: ethan
-    age: 17
-  - name: skippy
-    age: 17
+number: 12
+string: Hello, world!
+
+fruits:
+  - apple
+  - pear
+person:
+  name: Zach
+  age: 20

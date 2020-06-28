@@ -3,8 +3,6 @@ from figa.loaders import detect_and_parse
 from figa.loaders.default import BasicReader
 from os import environ as env
 
-__VERSION__ = "0.1a0"
-
 # ease of use
 
 system = platform.system().lower()
