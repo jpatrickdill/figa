@@ -77,6 +77,9 @@ class DictValueReader:
     def items(self):
         return [(key, self[key]) for key in self.keys()]
 
+    def raw(self):
+        return self._values
+
     def __getattr__(self, item):
         return self[item]
 
@@ -94,6 +97,3 @@ class BasicReader(DictValueReader):
             self._values = {}
             for k, v in values.items():
                 self._values[k.lower()] = v
-
-    def raw(self):
-        return self._values

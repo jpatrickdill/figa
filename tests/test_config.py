@@ -30,8 +30,11 @@ test_against = ({
 config_root = Path(r"C:\Users\Patrick\PycharmProjects\figa\tests")
 
 
-class MyConfig(figa.Config):
+@figa.config
+class MyConfig:
     # default = "./config.yml"
+
+    detected_example = {"detected": True}
 
     yaml_example = str(config_root / "config.yml")
     ini_example = str(config_root / "config.ini")
@@ -43,12 +46,35 @@ class MyConfig(figa.Config):
     web_example = "http", "https://gist.githubusercontent.com/jpatrickdill/" \
                           "7941fc1b531e69dfd4fe96c3628c497b/raw/8c49dba146f533614bee2b85ac0aa379de79ca99/config.json"
 
+    def get_env(self):
+        return "detected_example"
 
-tests = ["yaml", "ini", "json", "toml", "hocon", "web"]
+
+@figa.config
+class WithRequires:
+    __required__ = {
+        "number": int,
+        "string": str,
+        "fruits": list,
+        "person": {
+            "name": str,
+            "age": int
+        }
+    }
+
+    yaml_example = str(config_root / "config.yml")
+    ini_example = str(config_root / "config.ini")
 
 
-@pytest.mark.parametrize("environment", tests)
+@figa.config
+class NoDetect:
+    pass
+
+
+@pytest.mark.parametrize("environment", ["yaml", "ini", "json", "toml", "hocon", "web"])
 def test_configs(environment):
+    # checks that each config type can be parsed
+
     config = MyConfig("{}_example".format(environment))
 
     assert (not DeepDiff(config.raw(), test_against[0])) or (not DeepDiff(config.raw(), test_against[1]))
@@ -56,6 +82,8 @@ def test_configs(environment):
 
 # noinspection PyTypeChecker
 def test_env_vars():
+    # checks that environment variables can be used for config
+
     # environment variables to test
     env_vals = {
         "key": "env_value",
@@ -92,6 +120,23 @@ def test_env_vars():
     assert env_eq(config, env_vals)
 
 
+def test_detect_environment():
+    # checks that the get_env() method will be called if no environment is provided
+
+    config = MyConfig()
+
+    assert config.detected
+
+
+def test_no_detection():
+    # checks that attempting to detect an environment on a config with no get_env() fails
+
+    with pytest.raises(NotImplementedError):
+        config = NoDetect()
+
+
 def test_nonexistant_env():
+    # checks that trying to get a nonexistant config environment will raise an error
+
     with pytest.raises(ValueError):
         config = MyConfig("nonexistant_env")

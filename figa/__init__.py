@@ -1,6 +1,8 @@
 import platform
+from functools import wraps
+
 from figa.loaders import detect_and_parse
-from figa.loaders.default import BasicReader
+from figa.loaders.default import BasicReader, DictValueReader
 from os import environ as env
 
 # ease of use
@@ -9,24 +11,27 @@ system = platform.system().lower()
 version = platform.python_version()
 
 
-# class
-
-class Config:
-    def __new__(cls, env=None):
+def config(cls):
+    @wraps(cls)
+    def get_config(environment: str = None) -> DictValueReader:
         # detect env
-        env = env or cls.get_env(cls)
+        if environment is None:
+            if not hasattr(cls, "get_env"):
+                raise NotImplementedError("No get_env() method defined, can't detect environment")
 
-        if env is None:
-            raise ValueError("No environment was provided or could be detected")
+            environment = cls.get_env(cls)
+
+            if environment is None:
+                raise ValueError("No environment was provided or could be detected")
 
         # find config arguments
-        args = getattr(cls, env, None)
+        args = getattr(cls, environment, None)
         if args is None:
-            raise ValueError("No environment named {!r}".format(env))
+            raise ValueError("No environment named {!r}".format(environment))
         if not isinstance(args, tuple):
             args = (args,)
 
-        default = cls("default")._values if env != "default" and hasattr(cls, "default") else None
+        default = get_config("default")._values if environment != "default" and hasattr(cls, "default") else None
 
         if isinstance(args[0], dict):  # dict object
             return BasicReader(args[0], default=default)
@@ -37,5 +42,4 @@ class Config:
 
         return parsed
 
-    def get_env(self):
-        raise NotImplementedError("Environment can't be detected because no get_env() method was defined.")
+    return get_config
