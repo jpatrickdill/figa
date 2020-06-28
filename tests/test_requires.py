@@ -1,11 +1,8 @@
-import os
 import sys
-from pathlib import Path
 
 sys.path.append(r"C:\Users\Patrick\PycharmProjects\figa")
 
 import pytest
-from deepdiff import DeepDiff  # required to run tests
 import figa
 from contextlib import contextmanager
 
@@ -21,9 +18,6 @@ def not_raises(expected):
 
     except Exception as error:
         raise AssertionError(f"An unexpected exception {error} raised.")
-
-
-config_root = Path(r"C:\Users\Patrick\PycharmProjects\figa\tests")
 
 
 # tests
@@ -47,7 +41,8 @@ class WithRequired:
         "person": {
             "name": "Mark",
             "age": 64
-        }
+        },
+        "extra": "extra!"
     }
     without_types = {
         "number": "10",
@@ -56,8 +51,17 @@ class WithRequired:
         "person": {
             "name": "Mark",
             "age": "64"
-        }
+        },
+        "extra": "extra!"
     }
+
+
+@pytest.mark.parametrize("environment", ["with_types", "without_types"])
+def test_requires(environment):
+    # checks that creating a valid config using __required__ will not raise an error
+
+    with not_raises(ValueError):
+        config = WithRequired(environment)
 
 
 @figa.config
@@ -76,17 +80,35 @@ class RequiredFails:
     }
 
 
-@pytest.mark.parametrize("environment", ["with_types", "without_types"])
-def test_requires(environment):
-    # checks that creating a valid config using __required__ will not raise an error
-
-    with not_raises(ValueError):
-        config = WithRequired(environment)
-
-
 @pytest.mark.parametrize("environment", ["missing_arg", "fails_typecheck"])
 def test_requires_fails(environment):
     # checks that a config that doesn't include every required item will fail
 
     with pytest.raises(ValueError):
         config = RequiredFails(environment)
+
+
+@figa.config
+class ShouldConvert:
+    __required__ = {
+        "int": int,
+        "string": str,
+        "float1": float,
+        "float2": float
+    }
+
+    test = {
+        "int": "15",
+        "string": 100,
+        "float1": "42.42",
+        "float2": 42
+    }
+
+
+def test_converts():
+    # checks that values will be converted to __required__ types if possible
+
+    config = ShouldConvert("test")
+
+    assert config.int == 15
+    assert config.string == "100"

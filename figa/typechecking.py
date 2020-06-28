@@ -12,7 +12,7 @@ def check(types: dict, values: dict, trace=None):
         # check if item exists
         if item not in values:
             trace.append(item)
-            raise ValueError("Missing item {}".format(".".join(trace)))
+            raise ValueError("Missing item {!r}".format(".".join(trace)))
 
         val = values[item]
 
@@ -20,12 +20,14 @@ def check(types: dict, values: dict, trace=None):
             check(type_, val, trace + [item])
         else:
             if not isinstance(val, type_):
+                # try converting value if reasonable (str, int, float)
                 if type_ in converters and type(val) in converters:
                     try:
-                        nv = type_(val)
+                        values[item] = type_(val)  # try converting to expected type
                     except ValueError:
                         trace.append(item)
-                        raise ValueError("item {} doesn't match type {!r}".format(".".join(trace), type_.__name__))
+                        raise ValueError("item {!r} doesn't match type {!r}".format(".".join(trace), type_.__name__))
                 else:
                     trace.append(item)
-                    raise ValueError("item {} doesn't match type {!r}".format(".".join(trace), type_.__name__))
+                    raise ValueError("item {!r} doesn't match type {!r}".format(".".join(trace), type_.__name__))
+
