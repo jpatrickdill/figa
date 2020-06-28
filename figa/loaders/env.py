@@ -5,17 +5,19 @@ from figa.util import dict_merge
 
 
 class EnvParser:
-    def __init__(self, prefix="", default=None):
-        self.reader = PrefixableReader(os.environ, prefix=prefix, default=default)
+    def __init__(self, prefix="", default=None, required=None):
+        self.reader = PrefixableReader(os.environ, prefix=prefix, default=default, required=required)
 
     @classmethod
-    def __handler__(cls, *args, default=None):
-        parser = cls(*args, default=default)
+    def __handler__(cls, *args, default=None, required=None):
+        parser = cls(*args, default=default, required=required)
         return parser.reader
 
 
 class PrefixableReader(DictValueReader):
-    def __init__(self, values, prefix="", default=None):
+    def __init__(self, values, prefix="", default=None, required=None):
+        super().__init__(values, required=required)
+
         self._list = False
 
         self._prefix = prefix.lower()

@@ -7,6 +7,23 @@ sys.path.append(r"C:\Users\Patrick\PycharmProjects\figa")
 import pytest
 from deepdiff import DeepDiff  # required to run tests
 import figa
+from contextlib import contextmanager
+
+
+# testing utils
+@contextmanager
+def not_raises(expected):
+    try:
+        yield
+
+    except expected as error:
+        raise AssertionError(f"Raised exception {error} when it should not!")
+
+    except Exception as error:
+        raise AssertionError(f"An unexpected exception {error} raised.")
+
+
+# tests
 
 # example files should match one of the following in their respective syntax:
 test_against = ({
@@ -48,22 +65,6 @@ class MyConfig:
 
     def get_env(self):
         return "detected_example"
-
-
-@figa.config
-class WithRequires:
-    __required__ = {
-        "number": int,
-        "string": str,
-        "fruits": list,
-        "person": {
-            "name": str,
-            "age": int
-        }
-    }
-
-    yaml_example = str(config_root / "config.yml")
-    ini_example = str(config_root / "config.ini")
 
 
 @figa.config
@@ -140,3 +141,6 @@ def test_nonexistant_env():
 
     with pytest.raises(ValueError):
         config = MyConfig("nonexistant_env")
+
+
+

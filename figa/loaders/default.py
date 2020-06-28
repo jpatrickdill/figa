@@ -1,5 +1,6 @@
 from pathlib import Path
 from figa.util import dict_merge
+from figa import typechecking
 
 
 class Parser:
@@ -7,7 +8,7 @@ class Parser:
         pass
 
     @classmethod
-    def __handler__(cls, fp, *args, default=None):
+    def __handler__(cls, fp, *args, default=None, required=None):
         parser = cls(*args)
 
         path = Path(fp).resolve()
@@ -28,7 +29,7 @@ class Parser:
 
             file.close()
 
-        return BasicReader(data, default=default)
+        return BasicReader(data, default=default, required=required)
 
     def parse_string(self, s):
         raise NotImplementedError
@@ -42,6 +43,10 @@ class Parser:
 
 
 class DictValueReader:
+    def __init__(self, values, required=None):
+        if required is not None:
+            typechecking.check(required, values)
+
     def __repr__(self):
         return repr(self._values)
 
@@ -85,7 +90,9 @@ class DictValueReader:
 
 
 class BasicReader(DictValueReader):
-    def __init__(self, values, default=None):
+    def __init__(self, values, default=None, required=None):
+        super().__init__(values, required=required)
+
         self._list = isinstance(values, list)
 
         if self._list:

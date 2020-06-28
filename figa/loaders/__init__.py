@@ -24,13 +24,13 @@ from figa.loaders import http
 parsers_full["http"] = http.HttpParser
 
 
-def detect_and_parse(args, default=None):
+def detect_and_parse(args, default=None, required=None):
     s_name = args[0].lower()
     ext = s_name.split(".")[-1]
 
     if s_name in parsers_full:
-        return parsers_full[s_name].__handler__(*args[1:], default=default)
+        return parsers_full[s_name].__handler__(*args[1:], default=default, required=required)
     elif ext in parsers_full:
-        return parsers_full[ext].__handler__(*args, default=default)
+        return parsers_full[ext].__handler__(*args, default=default, required=required)
 
     raise NotImplementedError("No parser found for {!r}".format(args[0]))

@@ -12,6 +12,9 @@ version = platform.python_version()
 
 
 def config(cls):
+    # add __required__ if not included
+    cls.__required__ = getattr(cls, "__required__", {})
+
     @wraps(cls)
     def get_config(environment: str = None) -> DictValueReader:
         # detect env
@@ -31,14 +34,17 @@ def config(cls):
         if not isinstance(args, tuple):
             args = (args,)
 
+        # get default values if not currently default
         default = get_config("default")._values if environment != "default" and hasattr(cls, "default") else None
 
+        # get reader
         if isinstance(args[0], dict):  # dict object
-            return BasicReader(args[0], default=default)
+            return BasicReader(args[0], default=default, required=cls.__required__)
         elif isinstance(args[0], str):  # string parser name
-            parsed = detect_and_parse(args, default=default)
+            parsed = detect_and_parse(args, default=default, required=cls.__required__)
         else:
-            parsed = args[0].__handler__(*args[1:], default=default)  # parser specified explicitly
+            # parser specified explicitly
+            parsed = args[0].__handler__(*args[1:], default=default, required=cls.__required__)
 
         return parsed
 
