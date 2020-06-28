@@ -5,6 +5,9 @@ __pycache__/
 *.py[cod]
 *$py.class
 
+# for test purposes
+ignored.conf
+
 # C extensions
 *.so
 

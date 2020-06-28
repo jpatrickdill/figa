@@ -10,13 +10,18 @@ from os import environ as env
 system = platform.system().lower()
 version = platform.python_version()
 
+no_warnings = False
+
 
 def config(cls):
     # add __required__ if not included
     cls.__required__ = getattr(cls, "__required__", {})
 
+
     @wraps(cls)
-    def get_config(environment: str = None) -> DictValueReader:
+    def get_config(environment: str = None, **kwargs) -> DictValueReader:
+        no_warn = kwargs.get("no_warnings", no_warnings)
+
         # detect env
         if environment is None:
             if not hasattr(cls, "get_env"):
@@ -41,10 +46,10 @@ def config(cls):
         if isinstance(args[0], dict):  # dict object
             return BasicReader(args[0], default=default, required=cls.__required__)
         elif isinstance(args[0], str):  # string parser name
-            parsed = detect_and_parse(args, default=default, required=cls.__required__)
+            parsed = detect_and_parse(args, default=default, required=cls.__required__, no_warnings=no_warn)
         else:
             # parser specified explicitly
-            parsed = args[0].__handler__(*args[1:], default=default, required=cls.__required__)
+            parsed = args[0].__handler__(*args[1:], default=default, required=cls.__required__, no_warnings=no_warn)
 
         return parsed
 

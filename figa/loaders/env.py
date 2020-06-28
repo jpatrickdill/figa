@@ -5,12 +5,12 @@ from figa.util import dict_merge
 
 
 class EnvParser:
-    def __init__(self, prefix="", default=None, required=None):
+    def __init__(self, prefix="", default=None, required=None, **kwargs):
         self.reader = PrefixableReader(os.environ, prefix=prefix, default=default, required=required)
 
     @classmethod
-    def __handler__(cls, *args, default=None, required=None):
-        parser = cls(*args, default=default, required=required)
+    def __handler__(cls, *args, default=None, required=None, **kwargs):
+        parser = cls(*args, default=default, required=required, **kwargs)
         return parser.reader
 
 

@@ -76,7 +76,7 @@ class NoDetect:
 def test_configs(environment):
     # checks that each config type can be parsed
 
-    config = MyConfig("{}_example".format(environment))
+    config = MyConfig("{}_example".format(environment), no_warnings=True)
 
     assert (not DeepDiff(config.raw(), test_against[0])) or (not DeepDiff(config.raw(), test_against[1]))
 
@@ -141,6 +141,3 @@ def test_nonexistant_env():
 
     with pytest.raises(ValueError):
         config = MyConfig("nonexistant_env")
-
-
-

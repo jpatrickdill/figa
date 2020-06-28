@@ -1,17 +1,34 @@
 from pathlib import Path
+from warnings import warn
+
 from figa.util import dict_merge
 from figa import typechecking
+import subprocess
 
 
 class Parser:
-    def __init__(self, *args):
+    def __init__(self, *args, **kwargs):
         pass
 
     @classmethod
-    def __handler__(cls, fp, *args, default=None, required=None):
-        parser = cls(*args)
+    def __handler__(cls, fp, *args, default=None, required=None, **kwargs):
+        parser = cls(*args, **kwargs)
 
         path = Path(fp).resolve()
+
+        # check if config will be ignored and warn user if necessary
+        if not kwargs.get("no_warnings"):
+            try:
+                ignored = subprocess.Popen(["git", "check-ignore", str(path)],
+                                           stdout=subprocess.PIPE).communicate()[0].rstrip().decode("utf-8")
+
+                if ignored == "":
+                    warn("Config file {!r} isn't included in your .gitignore, meaning you could be exposing private"
+                         " API keys in a public repository. To disable this warning, set figa.no_warnings = True"
+                         .format(path.name))
+
+            except FileNotFoundError:
+                pass
 
         if not path.is_file():
             raise FileNotFoundError("{} does not exist ({})".format(fp, path.absolute()))

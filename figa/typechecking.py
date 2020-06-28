@@ -1,6 +1,7 @@
 # type checking
 
-converters = [str, int, float]  # don't use list or float as converters, leads to weird results with respect to configs
+# don't use list or float as converters, leads to weird results with respect to configs
+converters = [str, int, float, bool]
 
 
 def check(types: dict, values: dict, trace=None):
@@ -12,7 +13,7 @@ def check(types: dict, values: dict, trace=None):
         # check if item exists
         if item not in values:
             trace.append(item)
-            raise ValueError("Missing item {!r}".format(".".join(trace)))
+            raise ValueError("Missing required item {!r}".format(".".join(trace)))
 
         val = values[item]
 

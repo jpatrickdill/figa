@@ -6,7 +6,6 @@ import pytest
 import figa
 from contextlib import contextmanager
 
-
 # testing utils
 @contextmanager
 def not_raises(expected):
@@ -93,15 +92,19 @@ class ShouldConvert:
     __required__ = {
         "int": int,
         "string": str,
-        "float1": float,
-        "float2": float
+        "floats": {
+            "float1": float,
+            "float2": float
+        }
     }
 
     test = {
         "int": "15",
         "string": 100,
-        "float1": "42.42",
-        "float2": 42
+        "floats": {
+            "float1": "42.42",
+            "float2": 42
+        }
     }
 
 
@@ -112,3 +115,5 @@ def test_converts():
 
     assert config.int == 15
     assert config.string == "100"
+    assert config.floats.float1 == 42.42
+    assert config.floats.float2 == 42.0
